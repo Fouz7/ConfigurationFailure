@@ -3,7 +3,7 @@
 #-----------------------------------
 
 server:
-  port: 9091
+  port: 8080  # Sesuaikan dengan port dalam Dockerfile dan docker-compose.yaml
 
 #-----------------------------------
 --- # Authentication
@@ -22,12 +22,12 @@ application:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/notes-app
-    username: user
-    password: password
+    url: jdbc:postgresql://database:5432/_core  # Gunakan nama layanan Docker
+    username: admin  # Sesuaikan dengan docker-compose.yaml
+    password: $$TF123.asdu$123  # Escape karakter $
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update  # Gunakan update untuk production, create-drop hanya untuk development/testing
 
 #-----------------------------------
 --- # i18n & L10n
@@ -55,7 +55,3 @@ spring:
   output:
     ansi:
       enabled: always # Just console color, I'm lovin' it!
-
-# # -----------------------------------
-# --- #
-# # -----------------------------------

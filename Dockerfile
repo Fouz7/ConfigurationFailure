@@ -10,6 +10,8 @@ FROM builder AS build
 COPY . /app/
 RUN mvn package -Dclassifier=exec -DskipTests
 
+RUN ls /app/target
+
 FROM runner
 COPY --from=build /app/target/demo.jar /opt/app.jar
 EXPOSE 8080
