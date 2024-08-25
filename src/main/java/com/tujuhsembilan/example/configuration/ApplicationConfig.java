@@ -2,14 +2,19 @@ package com.tujuhsembilan.example.configuration;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -29,6 +34,7 @@ import org.springframework.security.oauth2.server.authorization.config.annotatio
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.util.ResourceUtils;
 
 import com.nimbusds.jose.jwk.ECKey;
@@ -102,10 +108,19 @@ public class ApplicationConfig {
     return http.build();
   }
 
+//  @Bean
+//  public ECKey ecJwk() throws IOException, ParseException {
+//    try (var in = new FileInputStream(ResourceUtils.getFile("classpath:key/ES512.json"))) {
+//      return ECKey.parse(new String(in.readAllBytes(), StandardCharsets.UTF_8));
+//    }
+//  }
+
   @Bean
-  public ECKey ecJwk() throws IOException, ParseException {
-    try (var in = new FileInputStream(ResourceUtils.getFile("classpath:key/ES512.json"))) {
-      return ECKey.parse(new String(in.readAllBytes(), StandardCharsets.UTF_8));
+  public ECKey ecJwk() throws Exception{
+    Resource resource = new ClassPathResource("key/ES512.json");
+    try (Reader reader = new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8)) {
+      String json = FileCopyUtils.copyToString(reader);
+      return ECKey.parse(json);
     }
   }
 
